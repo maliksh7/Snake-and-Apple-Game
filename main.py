@@ -14,10 +14,12 @@ class Apple:
         self.x = SIZE*3
         self.y = SIZE*3
 
+    # drawing apple on screen
     def draw(self):
         self.parent_screen.blit(self.image, (self.x, self.y))
         pygame.display.flip()
 
+    # regenerating apple else where once snake eats an apple
     def move(self):
         self.x = random.randint(0, 24) * SIZE
         self.y = random.randint(0, 19) * SIZE
@@ -32,29 +34,36 @@ class Snake:
         self.direction = 'down'
         self.block = pygame.image.load("resources/block.jpg").convert()
 
+    # drawing snake with blocks
     def draw(self):
         self.parent_screen.fill(BACKGROUND_COLOR)
         for i in range(self.length):
             self.parent_screen.blit(self.block, (self.x[i], self.y[i]))
         pygame.display.flip()
 
+    # increases the length as snake eats an apple
     def increase_length(self):
         self.length += 1
         self.x.append(-1)
         self.y.append(-1)
 
+    # snake movement towards left
     def move_left(self):
         self.direction = 'left'
 
+    # snake movement towards right
     def move_right(self):
         self.direction = 'right'
 
+    # snake movement towards up
     def move_up(self):
         self.direction = 'up'
 
+    # snake movement towards down
     def move_down(self):
         self.direction = 'down'
 
+    # snake to continue walking unless movement direction is changed by arrows
     def walk(self):
 
         for i in range(self.length-1, 0, -1):
@@ -83,6 +92,7 @@ class Game:
         self.apple = Apple(self.surface)
         self.apple.draw()
 
+    # basic collision fun between two objects
     def is_collision(self, x1, y1, x2, y2):
         if x1 >= x2 and x1 < x2 + SIZE:
             if y1 >= y2 and y1 < y2 + SIZE:
@@ -90,6 +100,7 @@ class Game:
 
         return False
 
+    # @main game Handler/ Controller
     def play(self):
         self.snake.walk()
         self.apple.draw()
@@ -106,12 +117,14 @@ class Game:
             if self.is_collision(self.snake.x[0], self.snake.y[0], self.snake.x[i], self.snake.y[i]):
                 raise "Game Over"
 
+    # display score on screen
     def display_score(self):
         font = pygame.font.SysFont('arial', 30)
         score = font.render(
             f"Score: {self.snake.length}", True, (255, 255, 255))
         self.surface.blit(score, (800, 10))
 
+    # show a scorecard and replay option once game is over
     def show_game_over(self):
         self.surface.fill(BACKGROUND_COLOR)
         font = pygame.font.SysFont('arial', 30)
@@ -123,10 +136,12 @@ class Game:
         self.surface.blit(line2, (200, 350))
         pygame.display.flip()
 
+    # reset the game state to initial state as user opt to replay the game
     def reset(self):
         self.snake = Snake(self.surface, 1)
         self.apple = Apple(self.surface)
 
+    # @main Game Logic
     def run(self):
         running = True
         pause = False
@@ -160,6 +175,7 @@ class Game:
             try:
                 if not pause:
                     self.play()
+
             except Exception as e:
                 self.show_game_over()
                 pause = True
@@ -168,6 +184,7 @@ class Game:
             time.sleep(0.3)
 
 
+# main functioin
 if __name__ == "__main__":
     game = Game()
     game.run()
